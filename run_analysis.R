@@ -41,17 +41,14 @@ y_train <- read.table("y_train.txt") # reads activity label for train data
 train_data <- data.table(cbind(subject_train,y_train,x_train)) # merges subject, activity, and train data set
 colnames(train_data) <- c("subject","activity",as.vector(features$V2)) # renames variables by features info
 
-# 2.0 - 3.0 extract data pertaining to mean and standard deviation & adjust activity labels ---- 
+# 2.0 extract data pertaining to mean and standard deviation & adjust activity labels ---- 
 merged_data <- rbind(test_data,train_data) # joins test and train data to one set
 mean_std_data <- merged_data %>%
   subset(select = unique(names(merged_data))) %>% # remove any duplicated variables
   select(c("subject","activity",contains("mean"),contains("std"))) %>% # extract variables pertaining to mean and stdev
   mutate(activity = activity_labels$V2[activity]) # replace activity numerics with descriptive labels
 
-# 4.0 label the data set with descriptive variable names
-# this requirement is satisfied in line 47 where duplicative variables names are removed
-
-# 5.0 create a new tidy set that summarizes each variables mean by subject and activity ----
+# 3.0 create a new tidy set that summarizes each variables mean by subject and activity ----
 mean_data <- mean_std_data %>%
   group_by(subject,activity) %>%
   summarize_all(mean)
